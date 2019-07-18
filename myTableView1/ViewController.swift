@@ -10,7 +10,7 @@ import UIKit
 
 class MyTableViewController: UITableViewController {
     
-    let items = ["item 1", "item 2", "item 3"]
+    var items = ["item 1", "item 2", "item 3"]
 
     let cellId = "cellId"
     let headerId = "headerId"
@@ -32,6 +32,7 @@ class MyTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let myCell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MyCell
         myCell.nameLabel.text = items[indexPath.row]
+        myCell.myTableViewController = self
         return myCell
     }
     
@@ -39,6 +40,12 @@ class MyTableViewController: UITableViewController {
         return tableView.dequeueReusableHeaderFooterView(withIdentifier: headerId)
     }
     
+    func deleteCell(cell: UITableViewCell) {
+        if let deletionIndexPath = tableView.indexPath(for: cell) {
+            items.remove(at: deletionIndexPath.row)
+            tableView.deleteRows(at: [deletionIndexPath], with: .automatic)
+        }
+    }
    
 }
 
@@ -70,6 +77,9 @@ class Header: UITableViewHeaderFooterView {
 }
 
 class MyCell: UITableViewCell {
+    
+    var myTableViewController: MyTableViewController?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -107,6 +117,6 @@ class MyCell: UITableViewCell {
     }
     
     @objc func handleAction() {
-        print("tapped")
+        myTableViewController?.deleteCell(cell: self)
     }
 }
